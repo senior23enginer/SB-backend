@@ -65,10 +65,10 @@ public class PostgrelJDBCDdDetallePickingQueryRepository implements DdDetallePic
         codigo_etiqueta
         FROM interfaz_contable.dd_detalle_picking
         ORDER BY id_recvta, inventory_item_id
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

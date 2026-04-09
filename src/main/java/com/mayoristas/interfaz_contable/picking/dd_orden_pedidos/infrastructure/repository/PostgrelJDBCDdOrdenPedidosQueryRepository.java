@@ -93,10 +93,10 @@ public class PostgrelJDBCDdOrdenPedidosQueryRepository implements DdOrdenPedidos
         actualizado_por
         FROM interfaz_contable.dd_orden_pedidos
         ORDER BY codigo_empresa, lo_codigo_desp
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

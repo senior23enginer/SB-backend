@@ -65,10 +65,10 @@ public class PostgrelJDBCDdLocalesDespReposicionQueryRepository implements DdLoc
         creado_por
         FROM interfaz_contable.dd_locales_desp_reposicion
         ORDER BY codigo_empresa_dt, id_reposicion, codigo_empresa_desp, lo_codigo_desp
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

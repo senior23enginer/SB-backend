@@ -69,10 +69,10 @@ public class PostgrelJDBCDdListaOrdenPedidosQueryRepository implements DdListaOr
         creado_por
         FROM interfaz_contable.dd_lista_orden_pedidos
         ORDER BY codigo_empresa, lo_codigo_desp, codigo_lista, codigo_elemento
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

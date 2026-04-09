@@ -67,10 +67,10 @@ public class PostgrelJDBCDdOrdenPickingQueryRepository implements DdOrdenPicking
         sep_3
         FROM interfaz_contable.dd_orden_picking
         ORDER BY codigo_empresa, lo_codigo, sku
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

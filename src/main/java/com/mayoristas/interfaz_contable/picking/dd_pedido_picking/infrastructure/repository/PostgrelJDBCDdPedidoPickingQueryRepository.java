@@ -69,10 +69,10 @@ public class PostgrelJDBCDdPedidoPickingQueryRepository implements DdPedidoPicki
         lo_codigo
         FROM interfaz_contable.dd_pedido_picking
         ORDER BY id_recvta
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

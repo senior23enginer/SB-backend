@@ -65,10 +65,10 @@ public class PostgrelJDBCDdBultosQueryRepository implements DdBultosQueryReposit
         ind_utilizado
         FROM interfaz_contable.dd_bultos
         ORDER BY codigo_etiqueta
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

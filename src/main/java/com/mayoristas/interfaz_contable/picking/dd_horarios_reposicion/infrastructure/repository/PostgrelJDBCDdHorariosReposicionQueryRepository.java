@@ -69,10 +69,10 @@ public class PostgrelJDBCDdHorariosReposicionQueryRepository implements DdHorari
         actualizado_por
         FROM interfaz_contable.dd_horarios_reposicion
         ORDER BY codigo_empresa_dt, id_reposicion, hora
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

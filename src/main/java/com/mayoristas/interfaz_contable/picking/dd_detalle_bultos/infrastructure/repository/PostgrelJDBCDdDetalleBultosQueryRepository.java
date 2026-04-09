@@ -59,10 +59,10 @@ public class PostgrelJDBCDdDetalleBultosQueryRepository implements DdDetalleBult
         cantidad
         FROM interfaz_contable.dd_detalle_bultos
         ORDER BY codigo_etiqueta, inventory_item_id
-        LIMIT ? OFFSET ?
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
 
-        return jdbcTemplate.query(sql, mapper, limit, offset);
+        return jdbcTemplate.query(sql, mapper, offset, limit);
 
     }
 

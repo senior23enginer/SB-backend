@@ -1,4 +1,4 @@
-package com.mayoristas.interfaz_contable.shared.infrastructure.config.postgres;
+package com.mayoristas.interfaz_contable.shared.infrastructure.config.oracle;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,21 +12,21 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import javax.sql.DataSource;
 
 @Configuration
-public class PostgresJdbcConfig {
+public class OracleJdbcConfig {
 
-    @Bean(name = "postgresDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.postgres")
-    public DataSource postgresDataSource() {
+    @Bean(name = "oracleDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource")
+    public DataSource oracleDataSource() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
-    public JdbcTemplate postgresJdbcTemplate(@Qualifier("postgresDataSource") DataSource dataSource) {
+    public JdbcTemplate oracleJdbcTemplate(@Qualifier("oracleDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
     @Bean
-    public NamedParameterJdbcTemplate postgresNamedJdbcTemplate(@Qualifier("postgresDataSource") DataSource dataSource) {
+    public NamedParameterJdbcTemplate oracleNamedJdbcTemplate(@Qualifier("oracleDataSource") DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
     }
 }
