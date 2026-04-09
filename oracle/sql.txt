@@ -1,0 +1,305 @@
+-- =========================================================
+-- SCRIPT DDL ORACLE - PICKING / ORDEN PEDIDOS
+-- VERSION LIMPIA
+-- =========================================================
+
+-- =========================================================
+-- TABLA: DD_PEDIDO_CLIENTE
+-- =========================================================
+CREATE TABLE dd_pedido_cliente (
+    dd_id_recvta NUMBER NOT NULL,
+    CONSTRAINT dd_pedido_pk PRIMARY KEY (dd_id_recvta)
+);
+
+-- =========================================================
+-- TABLA: DD_PEDIDO_PICKING
+-- =========================================================
+CREATE TABLE dd_pedido_picking (
+    id_recvta        NUMBER         NOT NULL,
+    estado           VARCHAR2(10)   NOT NULL,
+    fecha_estado     DATE           NOT NULL,
+    usuario_estado   VARCHAR2(100)  NOT NULL,
+    fecha_picking    DATE           NOT NULL,
+    usuario_picking  VARCHAR2(100)  NOT NULL,
+    codigo_empresa   NUMBER         NOT NULL,
+    lo_codigo        NUMBER         NOT NULL,
+    CONSTRAINT dd_ped_pick_pk PRIMARY KEY (id_recvta),
+    CONSTRAINT dd_ped_pick_ped_cli_fk
+        FOREIGN KEY (id_recvta)
+        REFERENCES dd_pedido_cliente (dd_id_recvta),
+    CONSTRAINT chk_dd_pedido_picking_estado
+        CHECK (estado IN ('CM','EL','EP','IC','PE','SB'))
+);
+
+-- =========================================================
+-- TABLA: DD_BULTOS
+-- =========================================================
+CREATE TABLE dd_bultos (
+    codigo_etiqueta    NUMBER         NOT NULL,
+    id_recvta          NUMBER         NOT NULL,
+    impresora          VARCHAR2(20)   NOT NULL,
+    fecha_impresion    DATE           NOT NULL,
+    usuario_impresion  VARCHAR2(100)  NOT NULL,
+    ind_utilizado      VARCHAR2(1),
+    CONSTRAINT dd_bultos_pk PRIMARY KEY (codigo_etiqueta),
+    CONSTRAINT dd_bultos_ped_pick_fk
+        FOREIGN KEY (id_recvta)
+        REFERENCES dd_pedido_picking (id_recvta),
+    CONSTRAINT chk_dd_bultos_ind_utilizado
+        CHECK (ind_utilizado IN ('S','N') OR ind_utilizado IS NULL)
+);
+
+-- =========================================================
+-- TABLA: DD_DETALLE_PICKING
+-- =========================================================
+CREATE TABLE dd_detalle_picking (
+    id_recvta         NUMBER         NOT NULL,
+    inventory_item_id NUMBER         NOT NULL,
+    cantidad          NUMBER         NOT NULL,
+    fecha_registro    DATE           NOT NULL,
+    usuario_registro  VARCHAR2(100)  NOT NULL,
+    codigo_etiqueta   NUMBER,
+    CONSTRAINT dd_det_pick_pk PRIMARY KEY (id_recvta, inventory_item_id),
+    CONSTRAINT dd_det_pick_ped_pick_fk
+        FOREIGN KEY (id_recvta)
+        REFERENCES dd_pedido_picking (id_recvta),
+    CONSTRAINT dd_det_pick_bulto_fk
+        FOREIGN KEY (codigo_etiqueta)
+        REFERENCES dd_bultos (codigo_etiqueta)
+);
+
+-- =========================================================
+-- TABLA: DD_DETALLE_BULTOS
+-- =========================================================
+CREATE TABLE dd_detalle_bultos (
+    codigo_etiqueta   NUMBER NOT NULL,
+    inventory_item_id NUMBER NOT NULL,
+    cantidad          NUMBER NOT NULL,
+    CONSTRAINT dd_det_bultos_pk PRIMARY KEY (codigo_etiqueta, inventory_item_id),
+    CONSTRAINT dd_bultos_det_fk
+        FOREIGN KEY (codigo_etiqueta)
+        REFERENCES dd_bultos (codigo_etiqueta)
+);
+
+-- =========================================================
+-- TABLA: DD_ORDEN_PICKING
+-- =========================================================
+CREATE TABLE dd_orden_picking (
+    codigo_empresa NUMBER        NOT NULL,
+    lo_codigo      NUMBER        NOT NULL,
+    sku            VARCHAR2(40)  NOT NULL,
+    orden          NUMBER        NOT NULL,
+    sep_1          VARCHAR2(20),
+    sep_2          VARCHAR2(20),
+    sep_3          VARCHAR2(20),
+    CONSTRAINT dd_orden_pick_pk PRIMARY KEY (sku, codigo_empresa, lo_codigo)
+);
+
+-- =========================================================
+-- TABLA: DD_TEMPORAL_ORDEN_PICKING
+-- =========================================================
+CREATE TABLE dd_temporal_orden_picking (
+    codigo_empresa NUMBER        NOT NULL,
+    lo_codigo      NUMBER        NOT NULL,
+    sku            VARCHAR2(40)  NOT NULL,
+    orden          NUMBER        NOT NULL,
+    sep_1          VARCHAR2(20),
+    sep_2          VARCHAR2(20),
+    sep_3          VARCHAR2(20),
+    CONSTRAINT dd_temp_orden_pick_pk PRIMARY KEY (sku, codigo_empresa, lo_codigo)
+);
+
+-- =========================================================
+-- TABLA: DD_ORDEN_PEDIDOS
+-- =========================================================
+CREATE TABLE dd_orden_pedidos (
+    codigo_empresa      NUMBER         NOT NULL,
+    lo_codigo_desp      NUMBER         NOT NULL,
+    check_comuna        VARCHAR2(1)    NOT NULL,
+    check_marca         VARCHAR2(1)    NOT NULL,
+    check_producto      VARCHAR2(1)    NOT NULL,
+    ind_and_or_prod     VARCHAR2(3)    NOT NULL,
+    ind_inc_exc         VARCHAR2(3)    NOT NULL,
+    check_stock         VARCHAR2(1)    NOT NULL,
+    sin_stock           VARCHAR2(1)    NOT NULL,
+    con_stock           VARCHAR2(1)    NOT NULL,
+    check_cant_prod     VARCHAR2(1)    NOT NULL,
+    cant_prod_desde     NUMBER,
+    cant_prod_hasta     NUMBER,
+    check_precio        VARCHAR2(1)    NOT NULL,
+    precio_desde        NUMBER,
+    precio_hasta        NUMBER,
+    fecha_creacion      DATE           NOT NULL,
+    creado_por          VARCHAR2(100)  NOT NULL,
+    fecha_actualizacion DATE           NOT NULL,
+    actualizado_por     VARCHAR2(100)  NOT NULL,
+    CONSTRAINT dd_orden_pedidos_pk PRIMARY KEY (codigo_empresa, lo_codigo_desp),
+    CONSTRAINT chk_dd_ord_ped_check_comuna
+        CHECK (check_comuna IN ('S','N')),
+    CONSTRAINT chk_dd_ord_ped_check_marca
+        CHECK (check_marca IN ('S','N')),
+    CONSTRAINT chk_dd_ord_ped_check_producto
+        CHECK (check_producto IN ('S','N')),
+    CONSTRAINT chk_dd_ord_ped_ind_and_or_prod
+        CHECK (ind_and_or_prod IN ('AND','OR')),
+    CONSTRAINT chk_dd_ord_ped_ind_inc_exc
+        CHECK (ind_inc_exc IN ('INC','EXC')),
+    CONSTRAINT chk_dd_ord_ped_check_stock
+        CHECK (check_stock IN ('S','N')),
+    CONSTRAINT chk_dd_ord_ped_sin_stock
+        CHECK (sin_stock IN ('S','N')),
+    CONSTRAINT chk_dd_ord_ped_con_stock
+        CHECK (con_stock IN ('S','N')),
+    CONSTRAINT chk_dd_ord_ped_check_cant_prod
+        CHECK (check_cant_prod IN ('S','N')),
+    CONSTRAINT chk_dd_ord_ped_check_precio
+        CHECK (check_precio IN ('S','N'))
+);
+
+-- =========================================================
+-- TABLA: DD_LISTA_ORDEN_PEDIDOS
+-- =========================================================
+CREATE TABLE dd_lista_orden_pedidos (
+    codigo_empresa  NUMBER         NOT NULL,
+    lo_codigo_desp  NUMBER         NOT NULL,
+    codigo_lista    VARCHAR2(132)  NOT NULL,
+    codigo_elemento VARCHAR2(32)   NOT NULL,
+    org_id_inv      NUMBER,
+    orden_elemento  NUMBER,
+    fecha_creacion  DATE           NOT NULL,
+    creado_por      VARCHAR2(100)  NOT NULL,
+    CONSTRAINT dd_lista_orden_pedidos_pk PRIMARY KEY (
+        codigo_empresa,
+        lo_codigo_desp,
+        codigo_lista,
+        codigo_elemento
+    ),
+    CONSTRAINT dd_lista_ord_ped_fk
+        FOREIGN KEY (codigo_empresa, lo_codigo_desp)
+        REFERENCES dd_orden_pedidos (codigo_empresa, lo_codigo_desp)
+);
+
+-- =========================================================
+-- TABLA: DD_CONFIGURACION_REPOSICION
+-- =========================================================
+CREATE TABLE dd_configuracion_reposicion (
+    codigo_empresa_dt   NUMBER         NOT NULL,
+    id_reposicion       NUMBER         NOT NULL,
+    nombre              VARCHAR2(64)   NOT NULL,
+    fecha_ult_ejec      DATE,
+    ind_de_activo       VARCHAR2(1)    NOT NULL,
+    fecha_creacion      DATE           NOT NULL,
+    creado_por          VARCHAR2(100)  NOT NULL,
+    fecha_actualizacion DATE           NOT NULL,
+    actualizado_por     VARCHAR2(100)  NOT NULL,
+    CONSTRAINT dd_configuracion_reposicion_pk PRIMARY KEY (codigo_empresa_dt, id_reposicion),
+    CONSTRAINT chk_dd_conf_rep_ind_activo
+        CHECK (ind_de_activo IN ('S','N'))
+);
+
+-- =========================================================
+-- TABLA: DD_LOCALES_DESP_REPOSICION
+-- =========================================================
+CREATE TABLE dd_locales_desp_reposicion (
+    codigo_empresa_dt   NUMBER         NOT NULL,
+    id_reposicion       NUMBER         NOT NULL,
+    codigo_empresa_desp NUMBER         NOT NULL,
+    lo_codigo_desp      NUMBER         NOT NULL,
+    fecha_creacion      DATE           NOT NULL,
+    creado_por          VARCHAR2(100)  NOT NULL,
+    CONSTRAINT dd_locales_desp_reposicion_pk PRIMARY KEY (
+        codigo_empresa_dt,
+        id_reposicion,
+        codigo_empresa_desp,
+        lo_codigo_desp
+    ),
+    CONSTRAINT dd_locales_desp_reposicion_fk
+        FOREIGN KEY (codigo_empresa_dt, id_reposicion)
+        REFERENCES dd_configuracion_reposicion (codigo_empresa_dt, id_reposicion)
+);
+
+-- =========================================================
+-- TABLA: DD_HORARIOS_REPOSICION
+-- =========================================================
+CREATE TABLE dd_horarios_reposicion (
+    codigo_empresa_dt   NUMBER         NOT NULL,
+    id_reposicion       NUMBER         NOT NULL,
+    hora                DATE           NOT NULL,
+    ind_de_activo       VARCHAR2(1)    NOT NULL,
+    fecha_creacion      DATE           NOT NULL,
+    creado_por          VARCHAR2(100)  NOT NULL,
+    fecha_actualizacion DATE           NOT NULL,
+    actualizado_por     VARCHAR2(100)  NOT NULL,
+    CONSTRAINT dd_horarios_reposicion_pk PRIMARY KEY (
+        codigo_empresa_dt,
+        id_reposicion,
+        hora
+    ),
+    CONSTRAINT dd_horarios_reposicion_fk
+        FOREIGN KEY (codigo_empresa_dt, id_reposicion)
+        REFERENCES dd_configuracion_reposicion (codigo_empresa_dt, id_reposicion),
+    CONSTRAINT chk_dd_hor_rep_ind_activo
+        CHECK (ind_de_activo IN ('S','N'))
+);
+
+-- =========================================================
+-- SECUENCIA: DD_CODIGO_ETIQ
+-- =========================================================
+CREATE SEQUENCE dd_codigo_etiq
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+
+-- =========================================================
+-- INDICES
+-- =========================================================
+CREATE INDEX idx_dd_bultos_id_recvta
+    ON dd_bultos (id_recvta);
+
+CREATE INDEX idx_dd_det_pick_id_recvta
+    ON dd_detalle_picking (id_recvta);
+
+CREATE INDEX idx_dd_det_pick_cod_etiqueta
+    ON dd_detalle_picking (codigo_etiqueta);
+
+CREATE INDEX idx_dd_det_bultos_cod_etiqueta
+    ON dd_detalle_bultos (codigo_etiqueta);
+
+CREATE INDEX idx_dd_lista_ord_ped_fk
+    ON dd_lista_orden_pedidos (codigo_empresa, lo_codigo_desp);
+
+CREATE INDEX idx_dd_locales_rep_fk
+    ON dd_locales_desp_reposicion (codigo_empresa_dt, id_reposicion);
+
+CREATE INDEX idx_dd_horarios_rep_fk
+    ON dd_horarios_reposicion (codigo_empresa_dt, id_reposicion);
+
+-- =========================================================
+-- COMMENTS OPCIONALES
+-- =========================================================
+COMMENT ON TABLE dd_pedido_picking IS 'Pedidos ingresados al sistema de picking';
+COMMENT ON TABLE dd_detalle_picking IS 'Detalle del picking';
+COMMENT ON TABLE dd_bultos IS 'Etiquetas disponibles por pedido';
+COMMENT ON TABLE dd_detalle_bultos IS 'Detalle de lo ingresado por bulto';
+COMMENT ON TABLE dd_orden_picking IS 'Orden de pickeo de los productos';
+COMMENT ON TABLE dd_temporal_orden_picking IS 'Tabla temporal para orden de picking';
+COMMENT ON TABLE dd_orden_pedidos IS 'Parametros de configuracion del orden en que se tomaran los pedidos';
+COMMENT ON TABLE dd_lista_orden_pedidos IS 'Define listas de configuracion de orden de pedidos';
+COMMENT ON TABLE dd_configuracion_reposicion IS 'Configuraciones de reposicion';
+COMMENT ON TABLE dd_locales_desp_reposicion IS 'Locales asociados a una configuracion de reposicion';
+COMMENT ON TABLE dd_horarios_reposicion IS 'Horarios de ejecucion por configuracion de reposicion';
+
+SELECT USER FROM dual;
+
+
+
+-- Crear usuario (esquema)
+CREATE USER salcobrand IDENTIFIED BY salcobrand123;
+
+-- Permisos básicos
+GRANT CONNECT TO salcobrand;
+GRANT RESOURCE TO salcobrand;
+
+-- Permiso para crear tablas sin límite
+GRANT UNLIMITED TABLESPACE TO salcobrand;
