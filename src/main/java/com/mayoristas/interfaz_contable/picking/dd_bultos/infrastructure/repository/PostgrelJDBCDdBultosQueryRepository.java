@@ -44,7 +44,7 @@ public class PostgrelJDBCDdBultosQueryRepository implements DdBultosQueryReposit
         fecha_impresion,
         usuario_impresion,
         ind_utilizado
-        FROM interfaz_contable.dd_bultos
+        FROM SALCOBRAND.dd_bultos
         ORDER BY codigo_etiqueta
         """;
 
@@ -63,7 +63,7 @@ public class PostgrelJDBCDdBultosQueryRepository implements DdBultosQueryReposit
         fecha_impresion,
         usuario_impresion,
         ind_utilizado
-        FROM interfaz_contable.dd_bultos
+        FROM SALCOBRAND.dd_bultos
         ORDER BY codigo_etiqueta
         OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         """;
@@ -86,7 +86,7 @@ public class PostgrelJDBCDdBultosQueryRepository implements DdBultosQueryReposit
         fecha_impresion,
         usuario_impresion,
         ind_utilizado
-        FROM interfaz_contable.dd_bultos
+        FROM SALCOBRAND.dd_bultos
         WHERE codigo_etiqueta = ?
         """;
 
@@ -109,3 +109,4 @@ public class PostgrelJDBCDdBultosQueryRepository implements DdBultosQueryReposit
     }
 
 }
+

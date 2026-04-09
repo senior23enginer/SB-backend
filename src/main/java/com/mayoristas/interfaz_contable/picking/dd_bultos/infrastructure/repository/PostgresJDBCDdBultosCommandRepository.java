@@ -35,7 +35,7 @@ public class PostgresJDBCDdBultosCommandRepository implements DdBultosCommandRep
         Objects.requireNonNull(entity, "Entity no puede ser null");
 
         String sql = """
-        INSERT INTO interfaz_contable.dd_bultos (codigo_etiqueta, id_recvta, impresora, fecha_impresion, usuario_impresion, ind_utilizado)
+        INSERT INTO SALCOBRAND.dd_bultos (codigo_etiqueta, id_recvta, impresora, fecha_impresion, usuario_impresion, ind_utilizado)
         VALUES (:codigoEtiqueta, :idRecvta, :impresora, :fechaImpresion, :usuarioImpresion, :indUtilizado)
         """;
 
@@ -66,7 +66,7 @@ public class PostgresJDBCDdBultosCommandRepository implements DdBultosCommandRep
         Objects.requireNonNull(entity, "Entity no puede ser null");
 
         String sql = """
-        UPDATE interfaz_contable.dd_bultos
+        UPDATE SALCOBRAND.dd_bultos
         SET id_recvta = :idRecvta,
         impresora = :impresora,
         fecha_impresion = :fechaImpresion,
@@ -102,7 +102,7 @@ public class PostgresJDBCDdBultosCommandRepository implements DdBultosCommandRep
         Objects.requireNonNull(key, "Key no puede ser null");
 
         String sql = """
-        DELETE FROM interfaz_contable.dd_bultos
+        DELETE FROM SALCOBRAND.dd_bultos
         WHERE codigo_etiqueta = :codigoEtiqueta
         """;
 
@@ -123,3 +123,4 @@ public class PostgresJDBCDdBultosCommandRepository implements DdBultosCommandRep
     }
 
 }
+

@@ -1,0 +1,22 @@
+
+-- find all
+curl --location 'http://localhost:8080/v1/dd-bultos?page=1&limit=20'
+
+
+-- por codigoEtiqueta
+curl --location 'http://localhost:8080/v1/dd-bultos?codigoEtiqueta=1001'
+
+
+
+--registro
+curl --location 'http://localhost:8080/v1/dd-bultos/create' \
+--header 'Content-Type: application/json' \
+--data '{
+  "codigoEtiqueta": 1001,
+  "idRecvta": 50001,
+  "impresora": "ZEBRA-01",
+  "fechaImpresion": "2026-04-09T10:30:00",
+  "usuarioImpresion": "operador1",
+  "indUtilizado": "N"
+}'
+
