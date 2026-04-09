@@ -1,8 +1,10 @@
 package com.mayoristas.interfaz_contable.picking.dd_bultos.infrastructure.controller.find;
 
 import com.mayoristas.interfaz_contable.picking.dd_bultos.application.find.DdBultosFinderAll;
+import com.mayoristas.interfaz_contable.picking.dd_bultos.application.find.DdBultosFinderByFilters;
 import com.mayoristas.interfaz_contable.picking.dd_bultos.application.find.DdBultosFinderById;
 import com.mayoristas.interfaz_contable.picking.dd_bultos.application.find.FindAllDdBultosQuery;
+import com.mayoristas.interfaz_contable.picking.dd_bultos.application.find.FindDdBultosByFiltersQuery;
 import com.mayoristas.interfaz_contable.picking.dd_bultos.application.find.FindByIdDdBultosQuery;
 import com.mayoristas.interfaz_contable.picking.dd_bultos.domain.DdBultos;
 import com.mayoristas.interfaz_contable.picking.dd_bultos.domain.exceptions.DdBultosNotFoundException;
@@ -25,23 +27,49 @@ import java.util.Objects;
 public class FindDdBultosController {
     private final Logger log = LoggerFactory.getLogger(FindDdBultosController.class);
     private final DdBultosFinderAll finderAll;
+    private final DdBultosFinderByFilters finderByFilters;
     private final DdBultosFinderById finderById;
 
-    public FindDdBultosController(DdBultosFinderAll finderAll, DdBultosFinderById finderById) {
+    public FindDdBultosController(
+            DdBultosFinderAll finderAll,
+            DdBultosFinderByFilters finderByFilters,
+            DdBultosFinderById finderById
+    ) {
         this.finderAll = Objects.requireNonNull(finderAll, "DdBultosFinderAll no puede ser null");
+        this.finderByFilters = Objects.requireNonNull(finderByFilters, "DdBultosFinderByFilters no puede ser null");
         this.finderById = Objects.requireNonNull(finderById, "DdBultosFinderById no puede ser null");
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<PagedFindDdBultosResponse>> findAll(
+            @RequestParam(required = false) Long idRecvta,
+            @RequestParam(required = false) String impresora,
+            @RequestParam(required = false) String usuarioImpresion,
+            @RequestParam(required = false) String indUtilizado,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int limit
     ) {
         try {
-            List<FindDdBultosItemResponse> content = finderAll.execute(new FindAllDdBultosQuery(page, limit))
-                    .stream()
-                    .map(this::toItem)
-                    .toList();
+            List<FindDdBultosItemResponse> content;
+
+            if (hasAnyFilter(idRecvta, impresora, usuarioImpresion, indUtilizado)) {
+                content = finderByFilters.execute(new FindDdBultosByFiltersQuery(
+                                idRecvta,
+                                impresora,
+                                usuarioImpresion,
+                                indUtilizado,
+                                page,
+                                limit
+                        ))
+                        .stream()
+                        .map(this::toItem)
+                        .toList();
+            } else {
+                content = finderAll.execute(new FindAllDdBultosQuery(page, limit))
+                        .stream()
+                        .map(this::toItem)
+                        .toList();
+            }
 
             PagedFindDdBultosResponse response = new PagedFindDdBultosResponse(content, page, limit, content.size());
             return ResponseEntity.ok(ApiResponse.success("DdBultos listados correctamente", response));
@@ -100,5 +128,12 @@ public class FindDdBultosController {
             return cause.getMessage();
         }
         return "Error de validacion";
+    }
+
+    private boolean hasAnyFilter(Long idRecvta, String impresora, String usuarioImpresion, String indUtilizado) {
+        return idRecvta != null
+                || (impresora != null && !impresora.isBlank())
+                || (usuarioImpresion != null && !usuarioImpresion.isBlank())
+                || (indUtilizado != null && !indUtilizado.isBlank());
     }
 }

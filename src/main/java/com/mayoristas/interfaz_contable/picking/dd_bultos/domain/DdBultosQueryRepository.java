@@ -10,4 +10,13 @@ public interface DdBultosQueryRepository  {
 
     DdBultos findById(DdBultosKey key);
 
+    List<DdBultos> findByFilters(
+            Long idRecvta,
+            String impresora,
+            String usuarioImpresion,
+            String indUtilizado,
+            int limit,
+            int offset
+    );
+
 }

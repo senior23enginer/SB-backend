@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Objects;
@@ -106,6 +107,56 @@ public class PostgrelJDBCDdBultosQueryRepository implements DdBultosQueryReposit
 
         }
 
+    }
+
+    @Override
+    public List<DdBultos> findByFilters(
+            Long idRecvta,
+            String impresora,
+            String usuarioImpresion,
+            String indUtilizado,
+            int limit,
+            int offset
+    ) {
+        StringBuilder sql = new StringBuilder("""
+        SELECT
+        codigo_etiqueta,
+        id_recvta,
+        impresora,
+        fecha_impresion,
+        usuario_impresion,
+        ind_utilizado
+        FROM SALCOBRAND.dd_bultos
+        WHERE 1 = 1
+        """);
+
+        List<Object> args = new ArrayList<>();
+
+        if (idRecvta != null) {
+            sql.append(" AND id_recvta = ?");
+            args.add(idRecvta);
+        }
+
+        if (impresora != null && !impresora.isBlank()) {
+            sql.append(" AND UPPER(impresora) LIKE ?");
+            args.add("%" + impresora.trim().toUpperCase() + "%");
+        }
+
+        if (usuarioImpresion != null && !usuarioImpresion.isBlank()) {
+            sql.append(" AND UPPER(usuario_impresion) LIKE ?");
+            args.add("%" + usuarioImpresion.trim().toUpperCase() + "%");
+        }
+
+        if (indUtilizado != null && !indUtilizado.isBlank()) {
+            sql.append(" AND UPPER(ind_utilizado) = ?");
+            args.add(indUtilizado.trim().toUpperCase());
+        }
+
+        sql.append(" ORDER BY codigo_etiqueta OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        args.add(offset);
+        args.add(limit);
+
+        return jdbcTemplate.query(sql.toString(), mapper, args.toArray());
     }
 
 }

@@ -30,4 +30,19 @@ public class DdBultosFinder {
             throw new DdBultosPersistenceException(ex);
         }
     }
+
+    public List<DdBultos> findByFilters(
+            Long idRecvta,
+            String impresora,
+            String usuarioImpresion,
+            String indUtilizado,
+            int limit,
+            int offset
+    ) {
+        try {
+            return queryRepository.findByFilters(idRecvta, impresora, usuarioImpresion, indUtilizado, limit, offset);
+        } catch (Exception ex) {
+            throw new DdBultosPersistenceException(ex);
+        }
+    }
 }
