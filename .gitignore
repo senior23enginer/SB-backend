@@ -1,0 +1,10 @@
+# IDE
+/.idea/
+/.vscode/
+
+# Build outputs
+/target/
+/out/
+
+# Local Maven cache used in this workspace
+/.m2home/
