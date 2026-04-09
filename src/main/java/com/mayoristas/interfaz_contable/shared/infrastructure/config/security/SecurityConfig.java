@@ -38,6 +38,10 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/authenticate").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/swagger-ui.html").permitAll()
+                                .requestMatchers("/webjars/**").permitAll()
                                 .anyRequest().permitAll()
                 )
                 .formLogin(Customizer.withDefaults())
