@@ -1,0 +1,178 @@
+INSERT INTO dd_pedido_cliente (dd_id_recvta)
+VALUES (1001);
+
+INSERT INTO dd_pedido_cliente (dd_id_recvta)
+VALUES (1002);
+
+
+INSERT INTO dd_pedido_picking (
+    id_recvta, estado, fecha_estado, usuario_estado,
+    fecha_picking, usuario_picking, codigo_empresa, lo_codigo
+) VALUES (
+    1001, 'PE', SYSDATE, 'USER1',
+    SYSDATE, 'USER1', 1, 101
+);
+
+INSERT INTO dd_pedido_picking (
+    id_recvta, estado, fecha_estado, usuario_estado,
+    fecha_picking, usuario_picking, codigo_empresa, lo_codigo
+) VALUES (
+    1002, 'EP', SYSDATE, 'USER2',
+    SYSDATE, 'USER2', 1, 102
+);
+
+
+
+INSERT INTO dd_bultos (
+    codigo_etiqueta, id_recvta, impresora,
+    fecha_impresion, usuario_impresion, ind_utilizado
+) VALUES (
+    dd_codigo_etiq.NEXTVAL, 1001, 'IMPRESORA1',
+    SYSDATE, 'USER1', 'N'
+);
+
+INSERT INTO dd_bultos (
+    codigo_etiqueta, id_recvta, impresora,
+    fecha_impresion, usuario_impresion, ind_utilizado
+) VALUES (
+    dd_codigo_etiq.NEXTVAL, 1002, 'IMPRESORA2',
+    SYSDATE, 'USER2', 'S'
+);
+
+
+
+
+INSERT INTO dd_detalle_picking (
+    id_recvta, inventory_item_id, cantidad,
+    fecha_registro, usuario_registro, codigo_etiqueta
+) VALUES (
+    1001, 5001, 2,
+    SYSDATE, 'USER1', 1
+);
+
+
+
+INSERT INTO dd_detalle_picking (
+    id_recvta, inventory_item_id, cantidad,
+    fecha_registro, usuario_registro, codigo_etiqueta
+) VALUES (
+    1001, 5002, 1,
+    SYSDATE, 'USER1', 1
+);
+
+
+
+INSERT INTO dd_detalle_bultos (
+    codigo_etiqueta, inventory_item_id, cantidad
+) VALUES (1, 5001, 2);
+
+INSERT INTO dd_detalle_bultos (
+    codigo_etiqueta, inventory_item_id, cantidad
+) VALUES (1, 5002, 1);
+
+
+
+INSERT INTO dd_orden_picking (
+    codigo_empresa, lo_codigo, sku, orden, sep_1, sep_2, sep_3
+) VALUES (
+    1, 101, 'SKU001', 1, 'A', 'PASILLO1', 'MOD1'
+);
+
+INSERT INTO dd_orden_picking (
+    codigo_empresa, lo_codigo, sku, orden, sep_1, sep_2, sep_3
+) VALUES (
+    1, 101, 'SKU002', 2, 'A', 'PASILLO2', 'MOD2'
+);
+
+
+INSERT INTO dd_orden_pedidos (
+    codigo_empresa, lo_codigo_desp,
+    check_comuna, check_marca, check_producto,
+    ind_and_or_prod, ind_inc_exc,
+    check_stock, sin_stock, con_stock,
+    check_cant_prod, check_precio,
+    fecha_creacion, creado_por,
+    fecha_actualizacion, actualizado_por
+) VALUES (
+    1, 101,
+    'S', 'S', 'S',
+    'AND', 'INC',
+    'S', 'N', 'S',
+    'S', 'S',
+    SYSDATE, 'ADMIN',
+    SYSDATE, 'ADMIN'
+);
+
+
+
+INSERT INTO dd_lista_orden_pedidos (
+    codigo_empresa, lo_codigo_desp,
+    codigo_lista, codigo_elemento,
+    org_id_inv, orden_elemento,
+    fecha_creacion, creado_por
+) VALUES (
+    1, 101,
+    'PRODUCTOS', 'SKU001',
+    228, 1,
+    SYSDATE, 'ADMIN'
+);
+
+
+INSERT INTO dd_lista_orden_pedidos (
+    codigo_empresa, lo_codigo_desp,
+    codigo_lista, codigo_elemento,
+    org_id_inv, orden_elemento,
+    fecha_creacion, creado_por
+) VALUES (
+    1, 101,
+    'PRODUCTOS', 'SKU002',
+    228, 2,
+    SYSDATE, 'ADMIN'
+);
+
+
+
+INSERT INTO dd_configuracion_reposicion (
+    codigo_empresa_dt, id_reposicion, nombre,
+    fecha_ult_ejec, ind_de_activo,
+    fecha_creacion, creado_por,
+    fecha_actualizacion, actualizado_por
+) VALUES (
+    1, 1, 'REPOSICION PRINCIPAL',
+    SYSDATE, 'S',
+    SYSDATE, 'ADMIN',
+    SYSDATE, 'ADMIN'
+);
+
+
+INSERT INTO dd_locales_desp_reposicion (
+    codigo_empresa_dt, id_reposicion,
+    codigo_empresa_desp, lo_codigo_desp,
+    fecha_creacion, creado_por
+) VALUES (
+    1, 1,
+    1, 101,
+    SYSDATE, 'ADMIN'
+);
+
+INSERT INTO dd_horarios_reposicion (
+    codigo_empresa_dt, id_reposicion, hora,
+    ind_de_activo, fecha_creacion, creado_por,
+    fecha_actualizacion, actualizado_por
+) VALUES (
+    1, 1, SYSDATE,
+    'S', SYSDATE, 'ADMIN',
+    SYSDATE, 'ADMIN'
+);
+
+
+
+
+
+
+
+
+
+
+
+
