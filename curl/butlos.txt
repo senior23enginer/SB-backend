@@ -7,7 +7,6 @@ curl --location 'http://localhost:8080/v1/dd-bultos?page=1&limit=20'
 curl --location 'http://localhost:8080/v1/dd-bultos?codigoEtiqueta=1001'
 
 
-
 --registro
 curl --location 'http://localhost:8080/v1/dd-bultos/create' \
 --header 'Content-Type: application/json' \
@@ -20,3 +19,6 @@ curl --location 'http://localhost:8080/v1/dd-bultos/create' \
   "indUtilizado": "N"
 }'
 
+-- find by dinamic parameter
+curl --location 'http://localhost:8080/v1/dd-bultos?idRecvta=1001&impresora=IMPRESORA&usuarioImpresion=USER&indUtilizado=S&page=1&limit=20' \
+--header 'Cookie: XSRF-TOKEN=839cbff2-ed63-4e52-9919-b94d8864ea6f'

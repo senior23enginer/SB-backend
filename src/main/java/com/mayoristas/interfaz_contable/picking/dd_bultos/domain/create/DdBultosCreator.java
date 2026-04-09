@@ -24,27 +24,17 @@ public class DdBultosCreator  {
     public DdBultos create(CreateDdBultosCommand c)  {
 
         Objects.requireNonNull(c);
-
         DdBultos a = DdBultosMapper.from(c);
-
         try  {
-
             int r = repo.create(a);
-
             if (r != 1) throw new DdBultosUnexpectedRowsException(r);
-
             return a;
-
         }
         catch (DdBultosUnexpectedRowsException e)  {
-
             throw e;
-
         }
         catch (Exception e)  {
-
             throw new DdBultosPersistenceException(e);
-
         }
 
     }
