@@ -56,6 +56,14 @@ public class CreateDdBultosController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(extractBestMessage(e), "already_exists"));
         } catch (DdBultosPersistenceException e) {
             log.error("Error createDdBultos", e);
+            if (isMissingParentIdRecvta(e)) {
+                return ResponseEntity.badRequest().body(
+                        ApiResponse.error(
+                                "El idRecvta no existe en SALCOBRAND.dd_pedido_picking.",
+                                "foreign_key_violation"
+                        )
+                );
+            }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error("Error creando DdBultos", "data_access_error"));
         } catch (Exception e) {
@@ -77,5 +85,20 @@ public class CreateDdBultosController {
             return cause.getMessage();
         }
         return "Error de validacion";
+    }
+
+    private boolean isMissingParentIdRecvta(Throwable error) {
+        Throwable current = error;
+        while (current != null) {
+            String message = current.getMessage();
+            if (message != null) {
+                String normalized = message.toUpperCase();
+                if (normalized.contains("ORA-02291") || normalized.contains("DD_BULTOS_PED_PICK_FK")) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 }
