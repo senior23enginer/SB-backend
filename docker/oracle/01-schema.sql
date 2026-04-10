@@ -1,0 +1,6 @@
+WHENEVER SQLERROR EXIT SQL.SQLCODE
+
+ALTER SESSION SET CONTAINER = FREEPDB1;
+@/opt/oracle/scripts/setup/sql.txt
+
+EXIT;
