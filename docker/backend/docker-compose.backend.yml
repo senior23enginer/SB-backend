@@ -13,6 +13,7 @@ services:
       - ../oracle/sql-seek.txt:/opt/oracle/scripts/setup/sql-seek.txt:ro
       - ../oracle/01-schema.sql:/opt/oracle/scripts/setup/01-schema.sql:ro
       - ../oracle/02-seed.sql:/opt/oracle/scripts/setup/02-seed.sql:ro
+      - ../oracle/03-verify.sql:/opt/oracle/scripts/setup/03-verify.sql:ro
     healthcheck:
       test:
         - CMD-SHELL
