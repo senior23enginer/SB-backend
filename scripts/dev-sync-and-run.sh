@@ -18,7 +18,7 @@ else
 fi
 
 echo "[dev] Levantando Oracle..."
-docker compose -f docker/oracle/docker-compose.yml up -d
+bash ./scripts/infra-up.sh
 
 echo "[dev] Iniciando backend en modo desarrollo (Spring Boot)..."
 ./mvnw spring-boot:run

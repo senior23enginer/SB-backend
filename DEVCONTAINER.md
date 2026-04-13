@@ -5,10 +5,11 @@ Este repositorio incluye configuracion para levantar un entorno de desarrollo re
 ## Que hace automaticamente
 
 - Instala entorno Java 21 + Maven dentro del contenedor.
-- Expone puertos `8080` (backend), `1521` y `5500` (Oracle).
+- Expone puertos `8080` (backend), `9000` (SonarQube), `1521` y `5500` (Oracle).
 - Al iniciar el contenedor:
   - Revisa si hay cambios remotos en la rama actual y hace `git pull --ff-only` cuando es seguro.
-  - Levanta Oracle con `docker/oracle/docker-compose.yml`.
+  - Levanta infraestructura completa (`Oracle + SonarQube`).
+  - Deja extensiones HTTP Client listas para probar endpoints sin Postman.
 
 ## Flujo recomendado (dev front que necesita backend rapido)
 
@@ -23,7 +24,7 @@ Este repositorio incluye configuracion para levantar un entorno de desarrollo re
 Este script:
 
 - Hace `git pull --ff-only` de la rama actual (si no hay cambios locales).
-- Levanta Oracle en Docker.
+- Levanta `Oracle + SonarQube` en Docker.
 - Inicia Spring Boot con `./mvnw spring-boot:run`.
 
 Si tienes cambios locales y no quieres hacer pull, usa:
@@ -36,7 +37,21 @@ Tambien puedes usar tareas de VS Code desde `Terminal > Run Task`:
 
 - `Backend: Sync + Run`
 - `Backend: Run (skip pull)`
-- `Infra: Start Oracle`
+- `Infra: Start (Oracle + SonarQube)`
+- `Sonar: Start`
+- `Sonar: Analyze`
+- `Sonar: Stop`
+
+## HTTP Client (tipo Postman)
+
+En el Dev Container se instalan estas extensiones:
+
+- `humao.rest-client`
+- `rangav.vscode-thunder-client`
+
+Archivo listo para pruebas:
+
+- `curl/sb-backend.http`
 
 ## Auto-sync al iniciar
 

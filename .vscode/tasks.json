@@ -14,9 +14,27 @@
       "problemMatcher": []
     },
     {
-      "label": "Infra: Start Oracle",
+      "label": "Infra: Start (Oracle + SonarQube)",
       "type": "shell",
-      "command": "docker compose -f docker/oracle/docker-compose.yml up -d",
+      "command": "./scripts/infra-up.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Sonar: Start",
+      "type": "shell",
+      "command": "./scripts/sonar-up.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Sonar: Stop",
+      "type": "shell",
+      "command": "./scripts/sonar-down.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Sonar: Analyze",
+      "type": "shell",
+      "command": "./scripts/sonar-scan.sh",
       "problemMatcher": []
     }
   ]

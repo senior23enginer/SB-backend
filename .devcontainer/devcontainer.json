@@ -13,6 +13,7 @@
   ],
   "forwardPorts": [
     8080,
+    9000,
     1521,
     5500
   ],
@@ -24,7 +25,9 @@
         "vscjava.vscode-java-pack",
         "vmware.vscode-spring-boot",
         "redhat.vscode-yaml",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "humao.rest-client",
+        "rangav.vscode-thunder-client"
       ]
     }
   }

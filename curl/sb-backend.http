@@ -1,0 +1,34 @@
+@baseUrl = http://localhost:8080
+@usuarioId = USER1
+@localCode = 101
+
+### Health by OpenAPI
+GET {{baseUrl}}/v3/api-docs
+
+### Swagger UI
+GET {{baseUrl}}/swagger-ui.html
+
+### DD_BULTOS - list
+GET {{baseUrl}}/v1/dd-bultos?page=1&limit=20
+
+### DD_BULTOS - list with dynamic filters
+GET {{baseUrl}}/v1/dd-bultos?idRecvta=1001&impresora=IMPRESORA-01&usuarioImpresion=USER1&indUtilizado=S&page=1&limit=20
+
+### DD_BULTOS - find by codigoEtiqueta
+GET {{baseUrl}}/v1/dd-bultos?codigoEtiqueta=1001
+
+### DD_BULTOS - create
+POST {{baseUrl}}/v1/dd-bultos/create
+Content-Type: application/json
+
+{
+  "codigoEtiqueta": 1001,
+  "idRecvta": 50001,
+  "impresora": "ZEBRA-01",
+  "fechaImpresion": "2026-04-09T10:30:00",
+  "usuarioImpresion": "operador1",
+  "indUtilizado": "N"
+}
+
+### DD_PEDIDO_PICKING - estado usuario
+GET {{baseUrl}}/v1/dd-pedido-picking/estado-usuario?usuarioId={{usuarioId}}&localCode={{localCode}}

@@ -31,12 +31,13 @@ deberias poder correr la API localmente sin pelearte con el entorno.
 Ese comando hace 3 cosas:
 
 - Baja cambios del repo con `git pull --ff-only` (si tu rama esta limpia).
-- Levanta Oracle en Docker.
+- Levanta Oracle + SonarQube en Docker.
 - Arranca el backend con Spring Boot.
 
 Backend local:
 - URL base: http://localhost:8080
 - Swagger:  http://localhost:8080/swagger-ui.html
+- SonarQube: http://localhost:9000
 
 
 ------------------------------------------------------------
@@ -59,13 +60,30 @@ Tambien tienes tareas listas en VS Code:
 
 - Backend: Sync + Run
 - Backend: Run (skip pull)
-- Infra: Start Oracle
+- Infra: Start (Oracle + SonarQube)
+- Sonar: Start
+- Sonar: Analyze
+- Sonar: Stop
 
 Ruta: Terminal > Run Task
 
 
 ------------------------------------------------------------
-5) AUTO-ACTUALIZACION AL INICIAR CONTAINER
+5) HTTP CLIENT TIPO POSTMAN (DENTRO DE VS CODE)
+------------------------------------------------------------
+
+Dentro del Dev Container quedan instaladas extensiones para probar APIs:
+
+- REST Client
+- Thunder Client
+
+Archivo listo para usar requests:
+
+- curl/sb-backend.http
+
+
+------------------------------------------------------------
+6) AUTO-ACTUALIZACION AL INICIAR CONTAINER
 ------------------------------------------------------------
 
 Cada vez que inicias el Dev Container:
@@ -81,7 +99,7 @@ Si quieres desactivar eso:
 
 
 ------------------------------------------------------------
-6) PROBLEMAS COMUNES (RAPIDO)
+7) PROBLEMAS COMUNES (RAPIDO)
 ------------------------------------------------------------
 
 Problema: "No se pudo hacer fetch/pull"
@@ -100,7 +118,7 @@ Problema: "El backend no arranca"
 
 
 ------------------------------------------------------------
-7) COMANDOS UTILES
+8) COMANDOS UTILES
 ------------------------------------------------------------
 
 Levantar todo (recomendado):
@@ -109,11 +127,31 @@ Levantar todo (recomendado):
 Levantar sin pull:
   SKIP_GIT_PULL=1 ./scripts/dev-sync-and-run.sh
 
-Solo Oracle:
-  docker compose -f docker/oracle/docker-compose.yml up -d
+Levantar Oracle + SonarQube:
+  ./scripts/infra-up.sh
 
-Parar Oracle:
-  docker compose -f docker/oracle/docker-compose.yml down
+Parar SonarQube:
+  ./scripts/sonar-down.sh
+
+
+------------------------------------------------------------
+9) SONARQUBE LOCAL (CALIDAD DE CODIGO)
+------------------------------------------------------------
+
+Levantar SonarQube:
+  ./scripts/sonar-up.sh
+
+Analizar el proyecto:
+  ./scripts/sonar-scan.sh
+
+Apagar SonarQube:
+  ./scripts/sonar-down.sh
+
+URL SonarQube:
+  http://localhost:9000
+
+Guia completa:
+  SONARQUBE_LOCAL.md
 
 
 ------------------------------------------------------------
