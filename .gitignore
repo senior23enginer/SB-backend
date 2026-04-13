@@ -1,6 +1,10 @@
 # IDE
 /.idea/
 /.vscode/
+!.vscode/
+!.vscode/tasks.json
+/.vscode/*
+!/.vscode/tasks.json
 *.iml
 *.iws
 *.ipr

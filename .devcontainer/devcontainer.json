@@ -1,0 +1,31 @@
+{
+  "name": "SB Backend Dev",
+  "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "AUTO_GIT_SYNC_ON_START": "1"
+  },
+  "mounts": [
+    "source=sb-backend-m2-cache,target=/home/vscode/.m2,type=volume"
+  ],
+  "forwardPorts": [
+    8080,
+    1521,
+    5500
+  ],
+  "postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+  "postStartCommand": "bash .devcontainer/scripts/post-start.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}
