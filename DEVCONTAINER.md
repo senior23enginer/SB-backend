@@ -9,6 +9,7 @@ Este repositorio incluye configuracion para levantar un entorno de desarrollo re
 - Al iniciar el contenedor:
   - Revisa si hay cambios remotos en la rama actual y hace `git pull --ff-only` cuando es seguro.
   - Levanta infraestructura completa (`Oracle + SonarQube`).
+  - Espera a que Oracle quede `healthy` antes de continuar.
   - Deja extensiones HTTP Client listas para probar endpoints sin Postman.
 
 ## Flujo recomendado (dev front que necesita backend rapido)

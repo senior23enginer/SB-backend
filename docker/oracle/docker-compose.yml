@@ -14,6 +14,16 @@ services:
       - ./01-schema.sql:/opt/oracle/scripts/setup/01-schema.sql:ro
       - ./02-seed.sql:/opt/oracle/scripts/setup/02-seed.sql:ro
       - ./03-verify.sql:/opt/oracle/scripts/setup/03-verify.sql:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          echo "SELECT 1 FROM DUAL;" |
+          sqlplus -s system/$${ORACLE_PWD}@//localhost:1521/FREEPDB1 | grep -q "1"
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 120s
     restart: unless-stopped
 
 volumes:

@@ -116,6 +116,7 @@ Comportamiento del script:
 - valida estado git local,
 - hace `git pull --ff-only` (si no hay cambios locales),
 - levanta Oracle + SonarQube,
+- espera Oracle en estado `healthy` antes de continuar,
 - arranca backend con `./mvnw spring-boot:run`.
 
 Para omitir pull:
