@@ -1,13 +1,34 @@
+# ============================================================
+# ENDPOINTS HABILITADOS ACTUALMENTE (SB BACKEND)
+# Base URL local: http://localhost:8080
+# ============================================================
 
--- find all
+# ------------------------------------------------------------
+# 1) DD_BULTOS - LISTAR (sin filtros)
+# GET /v1/dd-bultos
+# ------------------------------------------------------------
 curl --location 'http://localhost:8080/v1/dd-bultos?page=1&limit=20'
 
 
--- por codigoEtiqueta
+# ------------------------------------------------------------
+# 2) DD_BULTOS - LISTAR CON FILTROS DINAMICOS
+# GET /v1/dd-bultos
+# Filtros opcionales: idRecvta, impresora, usuarioImpresion, indUtilizado
+# ------------------------------------------------------------
+curl --location 'http://localhost:8080/v1/dd-bultos?idRecvta=1001&impresora=IMPRESORA-01&usuarioImpresion=USER1&indUtilizado=S&page=1&limit=20'
+
+
+# ------------------------------------------------------------
+# 3) DD_BULTOS - BUSCAR POR codigoEtiqueta
+# GET /v1/dd-bultos?codigoEtiqueta=...
+# ------------------------------------------------------------
 curl --location 'http://localhost:8080/v1/dd-bultos?codigoEtiqueta=1001'
 
 
---registro
+# ------------------------------------------------------------
+# 4) DD_BULTOS - CREAR REGISTRO
+# POST /v1/dd-bultos/create
+# ------------------------------------------------------------
 curl --location 'http://localhost:8080/v1/dd-bultos/create' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -19,6 +40,18 @@ curl --location 'http://localhost:8080/v1/dd-bultos/create' \
   "indUtilizado": "N"
 }'
 
--- find by dinamic parameter
-curl --location 'http://localhost:8080/v1/dd-bultos?idRecvta=1001&impresora=IMPRESORA&usuarioImpresion=USER&indUtilizado=S&page=1&limit=20' \
---header 'Cookie: XSRF-TOKEN=839cbff2-ed63-4e52-9919-b94d8864ea6f'
+
+# ------------------------------------------------------------
+# 5) DD_PEDIDO_PICKING - CONSULTAR ESTADO USUARIO
+# GET /v1/dd-pedido-picking/estado-usuario
+# Parametros requeridos: usuarioId, localCode
+# ------------------------------------------------------------
+curl --location 'http://localhost:8080/v1/dd-pedido-picking/estado-usuario?usuarioId=USER1&localCode=101'
+
+
+# ------------------------------------------------------------
+# 6) OPENAPI / SWAGGER (documentacion)
+# ------------------------------------------------------------
+curl --location 'http://localhost:8080/v3/api-docs'
+curl --location 'http://localhost:8080/swagger-ui.html'
+
