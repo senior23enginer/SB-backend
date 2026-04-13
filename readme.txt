@@ -1,164 +1,259 @@
 ============================================================
-GUIA RAPIDA PARA DEV FRONT - SB BACKEND
+SB-BACKEND - DOCUMENTACION TECNICA DE ENTORNO LOCAL
 ============================================================
 
-Si solo necesitas levantar este backend para probar tu frontend,
-esta guia es para ti.
-
-No necesitas conocer todo el proyecto Java. Con los pasos de abajo
-deberias poder correr la API localmente sin pelearte con el entorno.
+Estado del documento: vigente para setup local con Dev Container
+Repositorio: SB-backend
+Stack principal: Java 21, Spring Boot, Maven, Oracle, SonarQube
 
 
 ------------------------------------------------------------
-1) QUE NECESITAS INSTALADO
+1) OBJETIVO
 ------------------------------------------------------------
 
-- VS Code
-- Extension "Dev Containers" en VS Code
-- Docker Desktop encendido
+Estandarizar el entorno de desarrollo local para que cualquier perfil
+(backend o frontend) pueda:
 
-
-------------------------------------------------------------
-2) FORMA RECOMENDADA (DEV CONTAINER)
-------------------------------------------------------------
-
-1. Abre este repo en VS Code.
-2. Ejecuta: "Dev Containers: Reopen in Container".
-3. Cuando abra la terminal dentro del container, corre:
-
-   ./scripts/dev-sync-and-run.sh
-
-Ese comando hace 3 cosas:
-
-- Baja cambios del repo con `git pull --ff-only` (si tu rama esta limpia).
-- Levanta Oracle + SonarQube en Docker.
-- Arranca el backend con Spring Boot.
-
-Backend local:
-- URL base: http://localhost:8080
-- Swagger:  http://localhost:8080/swagger-ui.html
-- SonarQube: http://localhost:9000
+- levantar API local de forma reproducible,
+- usar base Oracle local,
+- ejecutar analisis de calidad con SonarQube,
+- probar endpoints HTTP sin herramientas externas obligatorias.
 
 
 ------------------------------------------------------------
-3) SI YA TIENES CAMBIOS LOCALES
+2) TOPOLOGIA LOCAL
 ------------------------------------------------------------
 
-Si estas trabajando en una rama con cambios sin commit, el script evita
-hacer pull para no pisarte nada.
+Componentes:
 
-En ese caso puedes correr:
+1. Dev Container (VS Code)
+2. Spring Boot app (puerto 8080)
+3. Oracle Free (puertos 1521 y 5500)
+4. SonarQube Community + PostgreSQL (puerto 9000)
 
-   SKIP_GIT_PULL=1 ./scripts/dev-sync-and-run.sh
+Flujo de arranque esperado:
 
-
-------------------------------------------------------------
-4) ATAJOS EN VS CODE (RUN TASK)
-------------------------------------------------------------
-
-Tambien tienes tareas listas en VS Code:
-
-- Backend: Sync + Run
-- Backend: Run (skip pull)
-- Infra: Start (Oracle + SonarQube)
-- Sonar: Start
-- Sonar: Analyze
-- Sonar: Stop
-
-Ruta: Terminal > Run Task
+1. Se abre el repo en Dev Container.
+2. `postStart` ejecuta:
+   - auto-sync git seguro (ff-only cuando aplica),
+   - arranque de infraestructura (Oracle + SonarQube).
+3. El backend se levanta manualmente con script de desarrollo.
 
 
 ------------------------------------------------------------
-5) HTTP CLIENT TIPO POSTMAN (DENTRO DE VS CODE)
+3) REQUISITOS DEL HOST
 ------------------------------------------------------------
 
-Dentro del Dev Container quedan instaladas extensiones para probar APIs:
+- Docker Desktop / Docker Engine operativo.
+- VS Code con extension Dev Containers.
+- Acceso a git remoto (si se usara auto-sync de cambios).
 
-- REST Client
-- Thunder Client
-
-Archivo listo para usar requests:
-
-- curl/sb-backend.http
+No se requiere Java/Maven instalados en host para flujo recomendado.
 
 
 ------------------------------------------------------------
-6) AUTO-ACTUALIZACION AL INICIAR CONTAINER
+4) ESTRUCTURA DE CONFIGURACION
 ------------------------------------------------------------
 
-Cada vez que inicias el Dev Container:
+Archivos de entorno:
 
-- Se revisa si hay cambios nuevos en remoto.
-- Si todo esta limpio y solo vas atrasado, se hace pull automatico.
-- Si hay cambios locales o rama divergente, no hace pull (por seguridad).
+- `.devcontainer/devcontainer.json`
+- `.devcontainer/scripts/post-create.sh`
+- `.devcontainer/scripts/post-start.sh`
+- `.devcontainer/scripts/auto-git-sync.sh`
 
-Si quieres desactivar eso:
+Infra Docker:
 
-- Edita `.devcontainer/devcontainer.json`
-- Cambia `AUTO_GIT_SYNC_ON_START` a `"0"`
+- `docker/oracle/docker-compose.yml`
+- `docker/sonarqube/docker-compose.yml`
 
+Scripts operativos:
 
-------------------------------------------------------------
-7) PROBLEMAS COMUNES (RAPIDO)
-------------------------------------------------------------
+- `scripts/dev-sync-and-run.sh`
+- `scripts/infra-up.sh`
+- `scripts/sonar-up.sh`
+- `scripts/sonar-scan.sh`
+- `scripts/sonar-down.sh`
+- `scripts/wait-sonarqube.sh`
 
-Problema: "No se pudo hacer fetch/pull"
-- Revisa conexion a internet.
-- Revisa permisos/credenciales de git en tu entorno.
+Cliente HTTP:
 
-Problema: "Oracle no levanta"
-- Verifica Docker Desktop encendido.
-- Revisa puertos ocupados (1521 y 5500).
-- Reinicia Docker y vuelve a correr el script.
-
-Problema: "El backend no arranca"
-- Mira logs en la terminal donde corriste el script.
-- Confirma que Oracle este arriba:
-  docker compose -f docker/oracle/docker-compose.yml ps
+- `curl/sb-backend.http`
+- `curl/butlos.txt` (comandos curl directos)
 
 
 ------------------------------------------------------------
-8) COMANDOS UTILES
+5) PUERTOS Y ENDPOINTS DE SERVICIOS
 ------------------------------------------------------------
 
-Levantar todo (recomendado):
-  ./scripts/dev-sync-and-run.sh
+Puertos locales:
 
-Levantar sin pull:
-  SKIP_GIT_PULL=1 ./scripts/dev-sync-and-run.sh
+- 8080 -> Spring Boot API
+- 9000 -> SonarQube UI/API
+- 1521 -> Oracle listener
+- 5500 -> Oracle management
 
-Levantar Oracle + SonarQube:
-  ./scripts/infra-up.sh
+URLs relevantes:
 
-Parar SonarQube:
-  ./scripts/sonar-down.sh
-
-
-------------------------------------------------------------
-9) SONARQUBE LOCAL (CALIDAD DE CODIGO)
-------------------------------------------------------------
-
-Levantar SonarQube:
-  ./scripts/sonar-up.sh
-
-Analizar el proyecto:
-  ./scripts/sonar-scan.sh
-
-Apagar SonarQube:
-  ./scripts/sonar-down.sh
-
-URL SonarQube:
-  http://localhost:9000
-
-Guia completa:
-  SONARQUBE_LOCAL.md
+- API base: `http://localhost:8080`
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+- SonarQube: `http://localhost:9000`
 
 
 ------------------------------------------------------------
-NOTA FINAL
+6) FLUJO OPERATIVO RECOMENDADO
 ------------------------------------------------------------
 
-Si algo no te corre en 5-10 minutos, no te quedes bloqueado/a:
-comparte el error en el equipo y lo vemos juntos.
+1. Abrir repo en VS Code.
+2. Ejecutar `Dev Containers: Reopen in Container`.
+3. En terminal del container:
+
+   `./scripts/dev-sync-and-run.sh`
+
+Comportamiento del script:
+
+- valida estado git local,
+- hace `git pull --ff-only` (si no hay cambios locales),
+- levanta Oracle + SonarQube,
+- arranca backend con `./mvnw spring-boot:run`.
+
+Para omitir pull:
+
+`SKIP_GIT_PULL=1 ./scripts/dev-sync-and-run.sh`
+
+
+------------------------------------------------------------
+7) AUTO-SYNC GIT EN DEV CONTAINER
+------------------------------------------------------------
+
+Variable de control:
+
+- `AUTO_GIT_SYNC_ON_START` (por defecto `1`)
+
+Reglas:
+
+- sin upstream configurado: intenta usar `origin/<branch>`,
+- repo limpio y rama atrasada: aplica `pull --ff-only`,
+- cambios locales/divergencia/HEAD detached: no hace pull.
+
+Objetivo: evitar sobrescritura de trabajo local y reducir drift de ramas.
+
+
+------------------------------------------------------------
+8) SONARQUBE LOCAL
+------------------------------------------------------------
+
+Levantamiento:
+
+`./scripts/sonar-up.sh`
+
+Analisis:
+
+`./scripts/sonar-scan.sh`
+
+Detencion:
+
+`./scripts/sonar-down.sh`
+
+Notas tecnicas:
+
+- Sonar usa PostgreSQL dedicado en compose local.
+- `sonar-scan.sh` espera disponibilidad con `wait-sonarqube.sh`.
+- Config de proyecto en `sonar-project.properties` y `pom.xml`.
+- Maven plugin usado: `org.sonarsource.scanner.maven:sonar-maven-plugin`.
+
+Autenticacion de analisis:
+
+- Recomendado: `SONAR_TOKEN`
+- Fallback: `SONAR_USER` + `SONAR_PASSWORD`
+
+
+------------------------------------------------------------
+9) HTTP CLIENT (TIPO POSTMAN) EN VS CODE
+------------------------------------------------------------
+
+Extensiones incluidas en Dev Container:
+
+- REST Client (`humao.rest-client`)
+- Thunder Client (`rangav.vscode-thunder-client`)
+
+Coleccion tecnica de requests:
+
+- `curl/sb-backend.http`
+
+Uso:
+
+- abrir archivo `.http`,
+- ejecutar request por bloque desde VS Code.
+
+
+------------------------------------------------------------
+10) TAREAS DE VS CODE (RUN TASK)
+------------------------------------------------------------
+
+Disponibles:
+
+- `Backend: Sync + Run`
+- `Backend: Run (skip pull)`
+- `Infra: Start (Oracle + SonarQube)`
+- `Sonar: Start`
+- `Sonar: Analyze`
+- `Sonar: Stop`
+
+Ruta:
+
+`Terminal > Run Task`
+
+
+------------------------------------------------------------
+11) COMANDOS DE DIAGNOSTICO
+------------------------------------------------------------
+
+Estado Oracle:
+
+`docker compose -f docker/oracle/docker-compose.yml ps`
+
+Estado SonarQube:
+
+`docker compose -f docker/sonarqube/docker-compose.yml ps`
+
+Estado del repo:
+
+`git status`
+
+Validacion Maven basica:
+
+`./mvnw -DskipTests validate`
+
+
+------------------------------------------------------------
+12) FALLAS COMUNES Y RESPUESTA TECNICA
+------------------------------------------------------------
+
+1. `git fetch/pull` falla en auto-sync
+- Causa probable: credenciales/red/upstream no disponible.
+- Accion: validar autenticacion git y ejecutar pull manual.
+
+2. SonarQube no responde en 9000
+- Causa probable: proceso aun en bootstrap o conflicto de puertos.
+- Accion: revisar logs docker y estado con `docker compose ps`.
+
+3. Backend no arranca
+- Causa probable: Oracle no disponible o credenciales datasource invalidas.
+- Accion: verificar Oracle arriba y propiedades de datasource.
+
+4. Scripts `.sh` no ejecutan
+- Causa probable: permisos en workspace montado.
+- Accion: `post-create.sh` corrige permisos; ejecutar con `bash <script>`.
+
+
+------------------------------------------------------------
+13) REFERENCIAS ADICIONALES
+------------------------------------------------------------
+
+- `DEVCONTAINER.md`
+- `SONARQUBE_LOCAL.md`
+- `SWAGGER_SETUP.md`
 
 ============================================================
